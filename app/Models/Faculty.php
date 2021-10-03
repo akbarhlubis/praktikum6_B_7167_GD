@@ -10,7 +10,7 @@ class Faculty extends Model
     protected $table = 'faculties';
     protected $primarykey = 'id';
     public $timestamps = true;
-    protected $filltable = [
+    protected $fillable = [
         'nama_fakultas'
     ];
 }

@@ -10,9 +10,10 @@ class Student extends Model
     protected $table = 'students';
     protected $primarykey = 'id';
     public $timestamps = true;
-    protected $filltable = [
+    protected $fillable = [
         'nama',
         'tempat_lahir',
+        'tanggal_lahir',
         'alamat'
     ];
 }
