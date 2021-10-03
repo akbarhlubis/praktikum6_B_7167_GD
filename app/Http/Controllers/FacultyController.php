@@ -1,10 +1,14 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Faculty;
+use Exception;
+use Illuminate\Support\Facades\Redirect;
+use Mockery\Expectation;
+use Mail;
+use App\Mail\FacultyMail;
 
 class FacultyController extends Controller
 {
@@ -27,7 +31,7 @@ class FacultyController extends Controller
      */
     public function create()
     {
-        return view('facultiyCRUD.create');
+        return view('facultyCRUD.create');
     }
 
     /**
@@ -39,11 +43,29 @@ class FacultyController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_fakultas' => ' required',
+            'nama_fakultas'=>'required',
         ]);
 
         Faculty::create($request->all());
-    }
+
+        return redirect()->route('faculties.index')
+        ->with('success','item created successfully');
+        
+        //Mengirimkan Email
+        try {
+            $detail=[
+                'body'=>$request->nama_fakultas,
+            ];
+            Mail::to('akbar_hamonangan_lubis@teknokrat.ac.id')->send(new FacultyMail($detail));
+            // Redirect Jika Sukses Menyimpan Data
+            return redirect()->route('faculties.index')
+            ->with('Berhasil!','Item Berhasil Dibuat');
+
+        } catch (Exception $e) {
+            return redirect()->route('faculties.index')->with('Berhasil!','Item Berhasil Dibuat Namun Tidak Berhasil dikirim ke Email');
+
+        }
+    }   
 
     /**
      * Display the specified resource.
@@ -90,7 +112,7 @@ class FacultyController extends Controller
         Faculty::find($id) ->update($request->all());
 
         return redirect()->route('faculties.index')
-                        ->with('succes','Item Update Succesfully');
+                        ->with('success','Item Update Succesfully');
     }
 
     /**
@@ -101,9 +123,11 @@ class FacultyController extends Controller
      */
     public function destroy($id)
     {
-        Faculty::find($id) ->delete();
+        Faculty::find($id)->delete();
 
         return redirect()->route('faculties.index')
-                        ->with('succes','Item Deleted Succesfully');
+                        ->with('success','Item Deleted Succesfully');
     }
+ 
+
 }
