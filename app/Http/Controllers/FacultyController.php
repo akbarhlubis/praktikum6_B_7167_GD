@@ -47,13 +47,13 @@ class FacultyController extends Controller
         ]);
 
         Faculty::create($request->all());
-        $detail=[
-            'body'=>$request->nama_fakultas,
-        ];
-        Mail::to('akbar_hamonangan_lubis@teknokrat.ac.id')->send(new FacultyMail($detail));
         
         //Mengirimkan Email
         try {
+            $detail=[
+                'body'=>$request->nama_fakultas,
+            ];
+            Mail::to('akbar_hamonangan_lubis@teknokrat.ac.id')->send(new FacultyMail($detail));
             // Redirect Jika Sukses Menyimpan Data
             return redirect()->route('faculties.index')
             ->with('Berhasil!','Item Berhasil Dibuat');
