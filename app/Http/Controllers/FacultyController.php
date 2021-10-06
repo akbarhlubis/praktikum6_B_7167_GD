@@ -7,7 +7,7 @@ use App\Models\Faculty;
 use Exception;
 use Illuminate\Support\Facades\Redirect;
 use Mockery\Expectation;
-use Mail;
+use Illuminate\Support\Facades\Mail;
 use App\Mail\FacultyMail;
 
 class FacultyController extends Controller
@@ -47,16 +47,13 @@ class FacultyController extends Controller
         ]);
 
         Faculty::create($request->all());
-
-        return redirect()->route('faculties.index')
-        ->with('success','item created successfully');
+        $detail=[
+            'body'=>$request->nama_fakultas,
+        ];
+        Mail::to('akbar_hamonangan_lubis@teknokrat.ac.id')->send(new FacultyMail($detail));
         
         //Mengirimkan Email
         try {
-            $detail=[
-                'body'=>$request->nama_fakultas,
-            ];
-            Mail::to('akbar_hamonangan_lubis@teknokrat.ac.id')->send(new FacultyMail($detail));
             // Redirect Jika Sukses Menyimpan Data
             return redirect()->route('faculties.index')
             ->with('Berhasil!','Item Berhasil Dibuat');
